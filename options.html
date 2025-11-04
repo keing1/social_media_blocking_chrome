@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Social Media Filter Options</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-size: 18px;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      color: #1da1f2;
+    }
+    .option-group {
+      background: #f7f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .checkbox-item {
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+    }
+    .checkbox-item input[type="checkbox"] {
+      margin-right: 10px;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    .checkbox-item label {
+      cursor: pointer;
+      user-select: none;
+    }
+    .status {
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 15px;
+      display: none;
+    }
+    .status.show {
+      display: block;
+    }
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    button {
+      background: #1da1f2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #1a91da;
+    }
+  </style>
+</head>
+<body>
+  <h1>Social Media Content Filter</h1>
+
+  <h2>X (Twitter) Settings</h2>
+  <div class="option-group">
+    <div class="checkbox-item">
+      <input type="checkbox" id="hideForYouTab">
+      <label for="hideForYouTab">Hide "For you" tab (show only "Following")</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="hidePremiumBox">
+      <label for="hidePremiumBox">Hide "Subscribe to Premium" box</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="hideWhatsHappening">
+      <label for="hideWhatsHappening">Hide "What's happening" box</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="hideWhoToFollow">
+      <label for="hideWhoToFollow">Hide "Who to follow" box</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="hideLeftSidebar">
+      <label for="hideLeftSidebar">Hide left sidebar (navigation)</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="hideMessagesDrawer">
+      <label for="hideMessagesDrawer">Hide messages drawer (bottom right)</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="hideGrokButton">
+      <label for="hideGrokButton">Hide Grok button (bottom right)</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="hideBottomBar">
+      <label for="hideBottomBar">Hide bottom bar (Terms, Privacy, etc.)</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="hideNonAuthorReplies">
+      <label for="hideNonAuthorReplies">When viewing a post, hide replies not in threads with the post author</label>
+    </div>
+  </div>
+
+  <button id="save">Save Settings</button>
+
+  <div id="status" class="status"></div>
+
+  <script src="options.js"></script>
+</body>
+</html>

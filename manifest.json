@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Social Media Content Filter",
+  "version": "1.0",
+  "description": "Customize your social media experience by hiding specific page elements",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "*://x.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://x.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "options_page": "options.html"
+}
