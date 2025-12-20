@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   chrome.storage.sync.get({
     hideForYouTab: false,
+    autoSwitchToFollowing: false,
     hidePremiumBox: false,
     hideWhatsHappening: false,
     hideWhoToFollow: false,
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     hideNonAuthorReplies: false
   }, function(items) {
     document.getElementById('hideForYouTab').checked = items.hideForYouTab;
+    document.getElementById('autoSwitchToFollowing').checked = items.autoSwitchToFollowing;
     document.getElementById('hidePremiumBox').checked = items.hidePremiumBox;
     document.getElementById('hideWhatsHappening').checked = items.hideWhatsHappening;
     document.getElementById('hideWhoToFollow').checked = items.hideWhoToFollow;
@@ -27,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
 document.getElementById('save').addEventListener('click', function() {
   const settings = {
     hideForYouTab: document.getElementById('hideForYouTab').checked,
+    autoSwitchToFollowing: document.getElementById('autoSwitchToFollowing').checked,
     hidePremiumBox: document.getElementById('hidePremiumBox').checked,
     hideWhatsHappening: document.getElementById('hideWhatsHappening').checked,
     hideWhoToFollow: document.getElementById('hideWhoToFollow').checked,
