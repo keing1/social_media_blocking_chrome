@@ -8,11 +8,14 @@
     "activeTab"
   ],
   "host_permissions": [
-    "*://x.com/*"
+    "*://x.com/*",
+    "*://*.facebook.com/*",
+    "*://*.youtube.com/*",
+    "*://www.reddit.com/*"
   ],
   "content_scripts": [
     {
-      "matches": ["*://x.com/*"],
+      "matches": ["*://x.com/*", "*://*.facebook.com/*", "*://*.youtube.com/*", "*://www.reddit.com/*"],
       "js": ["content.js"],
       "run_at": "document_start"
     }

@@ -41,6 +41,13 @@
       cursor: pointer;
       user-select: none;
     }
+    .number-item {
+      margin: 10px 0;
+    }
+    .number-item input[type="number"] {
+      width: 60px;
+      margin: 0 6px;
+    }
     .status {
       padding: 10px;
       border-radius: 4px;
@@ -86,18 +93,13 @@
     </div>
 
     <div class="checkbox-item">
-      <input type="checkbox" id="hidePremiumBox">
-      <label for="hidePremiumBox">Hide "Subscribe to Premium" box</label>
+      <input type="checkbox" id="hideHomeTabs">
+      <label for="hideHomeTabs">Hide the "For you / Following" tab bar on home (use with auto-switch above)</label>
     </div>
 
     <div class="checkbox-item">
-      <input type="checkbox" id="hideWhatsHappening">
-      <label for="hideWhatsHappening">Hide "What's happening" box</label>
-    </div>
-
-    <div class="checkbox-item">
-      <input type="checkbox" id="hideWhoToFollow">
-      <label for="hideWhoToFollow">Hide "Who to follow" box</label>
+      <input type="checkbox" id="hideRightSidebar">
+      <label for="hideRightSidebar">Hide right sidebar panes (Premium, trends, who to follow, ads, footer) — keeps the search bar</label>
     </div>
 
     <div class="checkbox-item">
@@ -116,13 +118,91 @@
     </div>
 
     <div class="checkbox-item">
-      <input type="checkbox" id="hideBottomBar">
-      <label for="hideBottomBar">Hide bottom bar (Terms, Privacy, etc.)</label>
+      <input type="checkbox" id="hideNonAuthorReplies">
+      <label for="hideNonAuthorReplies">When viewing a post, hide replies not in threads with the post author</label>
+    </div>
+  </div>
+
+  <h2>Facebook Settings</h2>
+  <div class="option-group">
+    <div class="checkbox-item">
+      <input type="checkbox" id="fbHideFeed">
+      <label for="fbHideFeed">Hide news feed (the wall, including stories) on the home page</label>
     </div>
 
     <div class="checkbox-item">
-      <input type="checkbox" id="hideNonAuthorReplies">
-      <label for="hideNonAuthorReplies">When viewing a post, hide replies not in threads with the post author</label>
+      <input type="checkbox" id="fbHideLeftSidebar">
+      <label for="fbHideLeftSidebar">Hide left sidebar (shortcuts: groups, marketplace, etc.)</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="fbHideRightSidebar">
+      <label for="fbHideRightSidebar">Hide right sidebar (contacts, sponsored, birthdays)</label>
+    </div>
+  </div>
+
+  <h2>YouTube Settings</h2>
+  <div class="option-group">
+    <div class="checkbox-item">
+      <input type="checkbox" id="ytHideShorts">
+      <label for="ytHideShorts">Block Shorts everywhere (feeds, search, sidebar, channel tabs, menu; opening a Short plays it as a regular video)</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="ytGate">
+      <label for="ytGate">Ask why I'm here and wait 5 seconds before using YouTube</label>
+    </div>
+  </div>
+
+  <h2>Reddit Settings</h2>
+  <div class="option-group">
+    <div class="checkbox-item">
+      <input type="checkbox" id="rdHideFeeds">
+      <label for="rdHideFeeds">Block the front page, r/popular, r/all, Explore and News feeds (subreddits and posts still work)</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="rdHideRecommendations">
+      <label for="rdHideRecommendations">Hide recommendations (suggested posts, recently viewed, trending searches, games)</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="rdGate">
+      <label for="rdGate">Ask why I'm here and wait 5 seconds before using Reddit</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="rdHideTopBar">
+      <label for="rdHideTopBar">Hide top bar (logo, search, sign-in / profile buttons)</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="rdHideLeftSidebar">
+      <label for="rdHideLeftSidebar">Hide left sidebar (navigation, or the sign-up panel when logged out)</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="rdHideRightSidebar">
+      <label for="rdHideRightSidebar">Hide right sidebar (community info, rules, ads)</label>
+    </div>
+
+    <div class="checkbox-item">
+      <input type="checkbox" id="rdLimitFeed">
+      <label for="rdLimitFeed">Stop infinite scroll: show a limited number of posts, then a "Show more" button</label>
+    </div>
+
+    <div class="number-item">
+      <label for="rdFeedLimit">Posts per batch</label>
+      <input type="number" id="rdFeedLimit" min="5" max="500">
+    </div>
+  </div>
+
+  <h2>"Why are you here?" Check</h2>
+  <div class="option-group">
+    <div class="number-item">
+      <label for="gateMinutes">After passing the check, ask again after</label>
+      <input type="number" id="gateMinutes" min="1" max="1440">
+      <label for="gateMinutes">minutes</label>
     </div>
   </div>
 
