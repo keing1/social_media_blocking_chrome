@@ -5,13 +5,15 @@
   "description": "Customize your social media experience by hiding specific page elements",
   "permissions": [
     "storage",
-    "activeTab"
+    "activeTab",
+    "webNavigation"
   ],
   "host_permissions": [
     "*://x.com/*",
     "*://*.facebook.com/*",
     "*://*.youtube.com/*",
-    "*://www.reddit.com/*"
+    "*://www.reddit.com/*",
+    "*://*.inoreader.com/*"
   ],
   "content_scripts": [
     {
@@ -20,5 +22,8 @@
       "run_at": "document_start"
     }
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "options_page": "options.html"
 }

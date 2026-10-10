@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A Chrome extension for filtering social media content. Currently supports X (formerly Twitter), Facebook, YouTube, and Reddit. Allows users to selectively hide UI elements like the "For you" tab, premium upsells, trending topics, recommended accounts, the Facebook news feed, the Facebook sidebars, YouTube Shorts, and Reddit's feeds and recommendations. It can also put a "why are you here?" gate in front of Reddit and YouTube.
+A Chrome extension for filtering social media content. Currently supports X (formerly Twitter), Facebook, YouTube, and Reddit. Allows users to selectively hide UI elements like the "For you" tab, premium upsells, trending topics, recommended accounts, the Facebook news feed, the Facebook sidebars, YouTube Shorts, and Reddit's feeds and recommendations. It can also put a "why are you here?" gate in front of Reddit, YouTube, and X.
 
 ## Architecture
 
@@ -12,6 +12,7 @@ A Chrome extension for filtering social media content. Currently supports X (for
 
 - **manifest.json** - Extension configuration with permissions and content script definitions
 - **content.js** - Content script injected into x.com, facebook.com, youtube.com, and www.reddit.com pages that performs DOM manipulation. Detects the platform via `window.location.hostname` and runs only that platform's filters (`runFilters()`).
+- **background.js** - Service worker that notices tabs opened from Inoreader (via `webNavigation.onCreatedNavigationTarget` + the opener tab's URL) and answers the content script's `openedFromTrustedSource` message, so those pages can skip the entry gate
 - **options.html/options.js** - Settings page for users to configure which elements to hide
 
 ### Key Technical Approach
@@ -86,7 +87,9 @@ Targets the current www.reddit.com UI ("shreddit", built from web components); o
 
 ## Entry Gate ("why are you here?")
 
-`rdGate` / `ytGate` put a full-screen overlay in front of the site. You must type a reason (at least 10 characters), and a 5-second countdown must finish; it only counts down while the tab is visible. Passing stores an expiry time in `chrome.storage.local` under `gatePasses[site]` (local, not synced). The pass lasts `gateMinutes`, is shared across tabs via `chrome.storage.onChanged`, and the gate reappears when it expires. The overlay lives in a closed shadow root appended to `<html>`, so it can be shown at `document_start` before `<body>` exists. It's built with `createElement` (YouTube enforces Trusted Types, so `innerHTML` strings are rejected), stops key events from reaching site shortcuts, locks page scrolling, and pauses any `video`/`audio` while shown.
+`rdGate` / `ytGate` / `xGate` put a full-screen overlay in front of the site. You must type a reason (at least 10 characters), and a 5-second countdown must finish; it only counts down while the tab is visible. Passing stores an expiry time in `chrome.storage.local` under `gatePasses[site]` (local, not synced). The pass lasts `gateMinutes`, is shared across tabs via `chrome.storage.onChanged`, and the gate reappears when it expires. The overlay lives in a closed shadow root appended to `<html>`, so it can be shown at `document_start` before `<body>` exists. It's built with `createElement` (YouTube enforces Trusted Types, so `innerHTML` strings are rejected), stops key events from reaching site shortcuts, locks page scrolling, and pauses any `video`/`audio` while shown.
+
+**Inoreader exemption** (`gateSkipFromInoreader`, on by default): the page you land on from an Inoreader link skips the gate; navigating to another page in that tab (compared by path, plus `v` for YouTube) brings it back. Inoreader sets `no-referrer`, so `document.referrer` is only a first check; the real signal comes from `background.js`, which records tabs opened by an inoreader.com tab in `chrome.storage.session` for 15 seconds (covering redirects like `/shorts/` → `/watch`). The gate is held back until that answer arrives (1s timeout). Links Inoreader opens in the *same* tab aren't detected.
 
 ## Adding New Filters
 

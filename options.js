@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     hideMessagesDrawer: false,
     hideGrokButton: false,
     hideNonAuthorReplies: false,
+    xGate: false,
     fbHideFeed: false,
     fbHideLeftSidebar: false,
     fbHideRightSidebar: false,
@@ -22,7 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
     rdHideRightSidebar: false,
     rdLimitFeed: false,
     rdFeedLimit: 25,
-    gateMinutes: 30
+    gateMinutes: 30,
+    gateSkipFromInoreader: true
   }, function(items) {
     document.getElementById('hideForYouTab').checked = items.hideForYouTab;
     document.getElementById('autoSwitchToFollowing').checked = items.autoSwitchToFollowing;
@@ -32,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('hideMessagesDrawer').checked = items.hideMessagesDrawer;
     document.getElementById('hideGrokButton').checked = items.hideGrokButton;
     document.getElementById('hideNonAuthorReplies').checked = items.hideNonAuthorReplies;
+    document.getElementById('xGate').checked = items.xGate;
     document.getElementById('fbHideFeed').checked = items.fbHideFeed;
     document.getElementById('fbHideLeftSidebar').checked = items.fbHideLeftSidebar;
     document.getElementById('fbHideRightSidebar').checked = items.fbHideRightSidebar;
@@ -46,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('rdLimitFeed').checked = items.rdLimitFeed;
     document.getElementById('rdFeedLimit').value = items.rdFeedLimit;
     document.getElementById('gateMinutes').value = items.gateMinutes;
+    document.getElementById('gateSkipFromInoreader').checked = items.gateSkipFromInoreader;
   });
 });
 
@@ -60,6 +64,7 @@ document.getElementById('save').addEventListener('click', function() {
     hideMessagesDrawer: document.getElementById('hideMessagesDrawer').checked,
     hideGrokButton: document.getElementById('hideGrokButton').checked,
     hideNonAuthorReplies: document.getElementById('hideNonAuthorReplies').checked,
+    xGate: document.getElementById('xGate').checked,
     fbHideFeed: document.getElementById('fbHideFeed').checked,
     fbHideLeftSidebar: document.getElementById('fbHideLeftSidebar').checked,
     fbHideRightSidebar: document.getElementById('fbHideRightSidebar').checked,
@@ -75,7 +80,8 @@ document.getElementById('save').addEventListener('click', function() {
     // Fall back to 25 posts if the box is empty or nonsensical
     rdFeedLimit: Math.max(5, parseInt(document.getElementById('rdFeedLimit').value, 10) || 25),
     // Fall back to 30 minutes if the box is empty or nonsensical
-    gateMinutes: Math.max(1, parseInt(document.getElementById('gateMinutes').value, 10) || 30)
+    gateMinutes: Math.max(1, parseInt(document.getElementById('gateMinutes').value, 10) || 30),
+    gateSkipFromInoreader: document.getElementById('gateSkipFromInoreader').checked
   };
 
   chrome.storage.sync.set(settings, function() {

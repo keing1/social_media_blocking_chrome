@@ -10,6 +10,7 @@ chrome.storage.sync.get({
   hideMessagesDrawer: false,
   hideGrokButton: false,
   hideNonAuthorReplies: false,
+  xGate: false,
   fbHideFeed: false,
   fbHideLeftSidebar: false,
   fbHideRightSidebar: false,
@@ -23,7 +24,8 @@ chrome.storage.sync.get({
   rdHideRightSidebar: false,
   rdLimitFeed: false,
   rdFeedLimit: 25,
-  gateMinutes: 30
+  gateMinutes: 30,
+  gateSkipFromInoreader: true
 }, function(settings) {
   chrome.storage.local.get({ gatePasses: {} }, function(local) {
     applyFilters(settings, local.gatePasses);
@@ -753,7 +755,7 @@ function applyFilters(settings, gatePasses) {
     });
   }
 
-  // ===== Entry gate (Reddit, YouTube) =====
+  // ===== Entry gate (Reddit, YouTube, X) =====
 
   // Before using a gated site you have to type why you're there and wait out
   // a countdown. Passing grants access for `gateMinutes`, shared across tabs
@@ -762,14 +764,62 @@ function applyFilters(settings, gatePasses) {
   // underneath is frozen (no scrolling, media paused) while it's up.
   const GATE_SECONDS = 5;
   const GATE_MIN_REASON_LENGTH = 10;
-  const gateSite = isReddit ? 'reddit' : isYouTube ? 'youtube' : null;
-  const gateEnabled = (isReddit && settings.rdGate) || (isYouTube && settings.ytGate);
+  const isX = !isFacebook && !isYouTube && !isReddit;
+  const gateSite = isReddit ? 'reddit' : isYouTube ? 'youtube' : isX ? 'x' : null;
+  const gateEnabled = (isReddit && settings.rdGate) || (isYouTube && settings.ytGate) || (isX && settings.xGate);
   let gateHost = null;
   let gateExpiryTimer = null;
   let savedOverflow = '';
 
   function gatePassed() {
     return (gatePasses[gateSite] || 0) > Date.now();
+  }
+
+  // Pages opened from Inoreader (the RSS reader) skip the gate, but only the
+  // page you landed on: navigating elsewhere in the tab brings the gate back.
+  // YouTube keeps the video id in the query (/watch?v=…), so it's part of the
+  // page identity. Detection uses the referrer when there is one, otherwise
+  // asks background.js whether Inoreader opened this tab (Inoreader normally
+  // sends no referrer). The gate is held back until that answer arrives so it
+  // doesn't flash up and vanish.
+  function currentPageKey() {
+    return window.location.pathname + '|' + (new URLSearchParams(window.location.search).get('v') || '');
+  }
+  let gateBypassKey = null;
+  let gateBypassChecked = !(gateEnabled && settings.gateSkipFromInoreader);
+
+  function gateBypassed() {
+    return gateBypassKey !== null && currentPageKey() === gateBypassKey;
+  }
+
+  if (!gateBypassChecked) {
+    const landingKey = currentPageKey();
+    let referrerHost = '';
+    try {
+      referrerHost = document.referrer ? new URL(document.referrer).hostname : '';
+    } catch (e) {}
+
+    if (referrerHost === 'inoreader.com' || referrerHost.endsWith('.inoreader.com')) {
+      gateBypassKey = landingKey;
+      gateBypassChecked = true;
+    } else {
+      const finishCheck = function(trusted) {
+        if (gateBypassChecked) {
+          return;
+        }
+        if (trusted) {
+          gateBypassKey = landingKey;
+        }
+        gateBypassChecked = true;
+        runFilters();
+      };
+      chrome.runtime.sendMessage({ type: 'openedFromTrustedSource' }, function(trusted) {
+        // lastError is set if the background worker couldn't answer
+        finishCheck(!chrome.runtime.lastError && trusted === true);
+      });
+      // Don't hold the gate back forever if the answer never comes
+      setTimeout(function() { finishCheck(false); }, 1000);
+    }
   }
 
   // Re-check when the current pass runs out, even if the page is idle
@@ -798,7 +848,7 @@ function applyFilters(settings, gatePasses) {
     });
 
     const root = gateHost.attachShadow({ mode: 'closed' });
-    const siteName = isReddit ? 'Reddit' : 'YouTube';
+    const siteName = isReddit ? 'Reddit' : isYouTube ? 'YouTube' : 'X';
     // Built with createElement rather than innerHTML: YouTube enforces Trusted
     // Types, which rejects plain-string innerHTML assignments
     const style = document.createElement('style');
@@ -919,7 +969,10 @@ function applyFilters(settings, gatePasses) {
 
   // Returns true while the gate is blocking the page
   function enforceGate() {
-    if (!gateEnabled || gatePassed()) {
+    if (!gateBypassChecked) {
+      return false; // still finding out whether this page came from Inoreader
+    }
+    if (!gateEnabled || gatePassed() || gateBypassed()) {
       hideGate();
       return false;
     }
